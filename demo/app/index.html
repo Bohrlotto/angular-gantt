@@ -238,7 +238,7 @@
                                 </h4>
                             </div>
                             <div class="panel-collapse" bs-collapse-target>
-                                <div class="panel-body">
+                                <div class="panel-body" id="gantt-container">
                                     <div gantt
                                          data="data"
                                          timespans="timespans"
@@ -266,7 +266,8 @@
                                          time-frames-non-working-mode="options.timeFramesNonWorkingMode"
                                          time-frames-magnet="options.timeFramesMagnet"
                                          api="options.api"
-                                         column-magnet="options.columnMagnet">
+                                         column-magnet="options.columnMagnet"
+										 gantt-container-id="gantt-container">
                                         <gantt-tree enabled="options.sideMode === 'Tree' || options.sideMode === 'TreeTable'"
                                                     header-content="options.treeHeaderContent"
                                                     keep-ancestor-on-filter-row="true">
