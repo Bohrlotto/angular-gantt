@@ -6,7 +6,7 @@
             this.row = row;
             this.model = model;
             this.truncatedLeft = false;
-            this.truncatedRight = false;
+            this.truncatedRight = false;    
         };
 
         Task.prototype.isMilestone = function() {
@@ -186,6 +186,7 @@
             return new Task(this.row, angular.copy(this.model));
         };
 
+        
         return Task;
     }]);
 }());

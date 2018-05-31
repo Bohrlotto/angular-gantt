@@ -1,8 +1,8 @@
 (function() {
     'use strict';
     angular.module('gantt').factory('Gantt', [
-        'GanttApi', 'GanttOptions', 'GanttCalendar', 'GanttScroll', 'GanttBody', 'GanttRowHeader', 'GanttHeader', 'GanttSide', 'GanttObjectModel', 'GanttRowsManager', 'GanttColumnsManager', 'GanttTimespansManager', 'GanttCurrentDateManager', 'ganttArrays', 'moment', '$document', '$timeout',
-        function(GanttApi, Options, Calendar, Scroll, Body, RowHeader, Header, Side, ObjectModel, RowsManager, ColumnsManager, TimespansManager, CurrentDateManager, arrays, moment, $document, $timeout) {
+        'GanttApi', 'GanttOptions', 'GanttCalendar', 'GanttScroll', 'GanttBody', 'GanttRowHeader', 'GanttHeader', 'GanttSide', 'GanttObjectModel', 'GanttRowsManager', 'GanttTasksManager', 'GanttColumnsManager', 'GanttTimespansManager', 'GanttCurrentDateManager', 'ganttArrays', 'moment', '$document', '$timeout',
+        function(GanttApi, Options, Calendar, Scroll, Body, RowHeader, Header, Side, ObjectModel, RowsManager, TasksManager, ColumnsManager, TimespansManager, CurrentDateManager, arrays, moment, $document, $timeout) {
             // Gantt logic. Manages the columns, rows and sorting functionality.
             var Gantt = function($scope, $element) {
                 var self = this;
@@ -68,6 +68,8 @@
                 this.api.registerMethod('timeframes', 'clearDateFrames', this.calendar.clearDateFrames, this.calendar);
                 this.api.registerMethod('timeframes', 'registerTimeFrameMappings', this.calendar.registerTimeFrameMappings, this.calendar);
                 this.api.registerMethod('timeframes', 'clearTimeFrameMappings', this.calendar.clearTimeFrameMappings, this.calendar);
+                
+                this.api.registerMethod('tasks', 'updateStyle', Gantt.prototype.updateTaskStyle, this);
 
                 $scope.$watchGroup(['timeFrames', 'dateFrames'], function(newValues, oldValues) {
                     if (newValues !== oldValues) {
@@ -146,6 +148,7 @@
                 this.objectModel = new ObjectModel(this.api);
 
                 this.rowsManager = new RowsManager(this);
+                this.tasksManager = new TasksManager(this);
                 this.columnsManager = new ColumnsManager(this);
                 this.timespansManager = new TimespansManager(this);
                 this.currentDateManager = new CurrentDateManager(this);
@@ -414,6 +417,15 @@
                 $timeout(renderedFunction);
             };
 
+            Gantt.prototype.updateTaskStyle = function (id, color) {
+            	if (color[0] !== '#'){
+            		color = '#' + color;
+            	}
+            	var task = arrays.findTaskById(this.$scope.data, id);
+            	task.color = color;
+                document.getElementById(task.id).childNodes[1].style.backgroundColor = task.color; 
+            };
+            
             return Gantt;
         }]);
 }());

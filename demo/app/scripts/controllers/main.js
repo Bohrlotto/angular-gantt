@@ -114,6 +114,8 @@ angular.module('angularGanttDemoApp')
             groupDisplayMode: 'group',
             filterTask: '',
             filterRow: '',
+            color: '',
+            colors: [{label: "color 1", value: "00FFAA"}, {label: "color 2", value : "ED4465"}],
             timeFrames: {
                 'day': {
                     start: moment('8:00', 'HH:mm'),
@@ -325,6 +327,17 @@ angular.module('angularGanttDemoApp')
                 $scope.api.side.setWidth(undefined);
                 $timeout(function() {
                     $scope.api.columns.refresh();
+                });
+            }
+        });
+        
+        $scope.$watch('options.color', function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                $scope.api.side.setWidth(undefined);
+                $timeout(function() {
+                	$scope.data[0].color = newValue;
+                	//$scope.data.splice(2);
+                    $scope.api.tasks.updateStyle("aaa", newValue);
                 });
             }
         });
