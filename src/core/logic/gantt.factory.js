@@ -70,6 +70,7 @@
                 this.api.registerMethod('timeframes', 'clearTimeFrameMappings', this.calendar.clearTimeFrameMappings, this.calendar);
                 
                 this.api.registerMethod('tasks', 'updateStyle', Gantt.prototype.updateTaskStyle, this);
+                this.api.registerMethod('tasks', 'updateDate', Gantt.prototype.updateTaskDate, this);
 
                 $scope.$watchGroup(['timeFrames', 'dateFrames'], function(newValues, oldValues) {
                     if (newValues !== oldValues) {
@@ -424,6 +425,52 @@
             	var task = arrays.findTaskById(this.$scope.data, id);
             	task.color = color;
                 document.getElementById(task.id).childNodes[1].style.backgroundColor = task.color; 
+            };
+            
+            Gantt.prototype.updateTaskDate = function (id, from, to) {
+            	var a = from;
+            	a = a;
+            	var b = to;
+            	b = b;
+            	
+            	var task = arrays.findTaskById(this.$scope.data, id);
+            	var taskInfo = this.getTaskAndRow(task.id);
+            	var t = taskInfo[0];
+            	t = t;
+            	document.getElementById(task.id);
+            	this.rowsManager = this.rowsManager;
+            	var row = taskInfo[1];
+            	row = row;
+            	var c = t.model.to;
+            	c = c;
+            	t.setFrom(t.model.from);
+            	to.setTo(t.model.to);
+                //document.getElementById(task.id).childNodes[1].style.backgroundColor = task.color; 
+            };
+            
+            Gantt.prototype.getTask = function (id) {
+            	var index, length;
+            	length = this.rowsManager.rows.length;
+            	for (index = 0; index < length; ++index){
+            		var task = this.rowsManager.rows[index].tasksMap[id];
+            		if (task){
+            			return task;
+            		}
+            	}
+            	return undefined;
+            };
+            
+            /*returns [task, Row, rowindex]*/
+            Gantt.prototype.getTaskAndRow = function (id) {
+            	var index, length;
+            	length = this.rowsManager.rows.length;
+            	for (index = 0; index < length; ++index){
+            		var task = this.rowsManager.rows[index].tasksMap[id];
+            		if (task){
+            			return [task, this.rowsManager.rows[index], index];
+            		}
+            	}
+            	return undefined;
             };
             
             return Gantt;

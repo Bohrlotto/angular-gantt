@@ -15,7 +15,7 @@
             this.nextColumns = [];
 
             this.headers = [];
-            this.visibleHeaders = [];
+            this.visibleHeaders = undefined;
 
             this.scrollAnchor = undefined;
 

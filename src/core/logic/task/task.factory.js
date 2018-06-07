@@ -152,6 +152,13 @@
             this.row.setFromTo();
             this.updatePosAndSize();
         };
+        
+        Task.prototype.updateFromAndTo = function(from, to) {
+            this.model.from = from;
+            this.model.to = to;
+            this.row.setFromTo();
+            this.updatePosAndSize();
+        };
 
         // Expands the end of the task to the specified position (in em)
         Task.prototype.setTo = function(x, magnetEnabled) {

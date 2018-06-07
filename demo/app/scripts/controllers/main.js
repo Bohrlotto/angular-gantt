@@ -338,6 +338,7 @@ angular.module('angularGanttDemoApp')
                 	$scope.data[0].color = newValue;
                 	//$scope.data.splice(2);
                     $scope.api.tasks.updateStyle("aaa", newValue);
+                    $scope.api.tasks.updateDate("aaa", new Date(), new Date());
                 });
             }
         });
