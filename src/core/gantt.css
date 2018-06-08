@@ -236,10 +236,6 @@
     width: 100%;
 }
 
-.gantt-table-content > div > div:nth-child(even) {
-    background-color: #EFEFEF;
-}
-
 .gantt-body-background > :nth-child(even) {
     background-color: #efefef;
 }

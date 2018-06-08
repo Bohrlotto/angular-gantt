@@ -161,6 +161,18 @@
             this.scrollToScrollAnchor();
 
             this.gantt.api.columns.raise.generate(this.columns, this.headers);
+            
+            /*fix first and last class to column-headers element via vanilla javascript*/
+            var list = document.getElementsByClassName('gantt-header-row');
+            for (var i = 0, l = list.length; i < l; i++) {
+            	if (list[i].firstElementChild){
+            		list[i].firstElementChild.classList.add('gantt-column-header-first');
+            	}
+            	if (list[i].lastElementChild){
+            		list[i].firstChild.classList.add('gantt-column-header-last');
+            	}
+            }
+            /**/
         };
 
         ColumnsManager.prototype.updateColumnsMeta = function() {

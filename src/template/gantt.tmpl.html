@@ -103,7 +103,7 @@
     </script>
 
     <script type="text/ng-template" id="template/ganttColumnHeader.tmpl.html">
-        <div class="gantt-column-header" ng-class="{'gantt-column-header-last': $last, 'gantt-column-header-first': $first}">{{::column.label}}</div>
+        <div class="gantt-column-header">{{::column.label}}</div>
     </script>
 
     <!-- Body background template -->
@@ -122,7 +122,7 @@
     </script>
 
     <script type="text/ng-template" id="template/ganttColumn.tmpl.html">
-        <div ng-transclude class="gantt-column gantt-foreground-col" ng-class="::{'gantt-column-last': $last, 'gantt-column-first': $first}"></div>
+        <div ng-transclude class="gantt-column gantt-foreground-col"></div>
     </script>
 
     <script type="text/ng-template" id="template/ganttTimeFrame.tmpl.html">

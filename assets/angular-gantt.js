@@ -1600,6 +1600,18 @@ Github: https://github.com/angular-gantt/angular-gantt.git
             this.scrollToScrollAnchor();
 
             this.gantt.api.columns.raise.generate(this.columns, this.headers);
+            
+            /*fix first and last class to column-headers element via vanilla javascript*/
+            var list = document.getElementsByClassName('gantt-header-row');
+            for (var i = 0, l = list.length; i < l; i++) {
+            	if (list[i].firstElementChild){
+            		list[i].firstElementChild.classList.add('gantt-column-header-first');
+            	}
+            	if (list[i].lastElementChild){
+            		list[i].firstChild.classList.add('gantt-column-header-last');
+            	}
+            }
+            /**/
         };
 
         ColumnsManager.prototype.updateColumnsMeta = function() {
@@ -5618,7 +5630,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '        <gantt-header gantt-element-height-listener="$parent.ganttHeaderHeight">\n' +
         '            <gantt-header-columns>\n' +
         '                <div ng-repeat="header in ::gantt.columnsManager.visibleHeaders track by $index">\n' +
-        '                    <div class="gantt-header-row" ng-class="::{\'gantt-header-row-last\': $last, \'gantt-header-row-first\': $first}">\n' +
+        '                    <div class="gantt-header-row">\n' +
         '                        <gantt-column-header ng-repeat="column in ::header"></gantt-column-header>\n' +
         '                    </div>\n' +
         '                </div>\n' +
@@ -5687,7 +5699,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttColumnHeader.tmpl.html">\n' +
-        '        <div class="gantt-column-header" ng-class="{\'gantt-column-header-last\': $last, \'gantt-column-header-first\': $first}">{{::column.label}}</div>\n' +
+        '        <div class="gantt-column-header">{{::column.label}}</div>\n' +
         '    </script>\n' +
         '\n' +
         '    <!-- Body background template -->\n' +
@@ -5706,7 +5718,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttColumn.tmpl.html">\n' +
-        '        <div ng-transclude class="gantt-column gantt-foreground-col" ng-class="::{\'gantt-column-last\': $last, \'gantt-column-first\': $first}"></div>\n' +
+        '        <div ng-transclude class="gantt-column gantt-foreground-col"></div>\n' +
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttTimeFrame.tmpl.html">\n' +
@@ -5763,7 +5775,6 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    <script type="text/ng-template" id="template/ganttRowBackground.tmpl.html">\n' +
         '        <div class="gantt-row gantt-row-height"\n' +
         '             ng-class="row.model.classes"\n' +
-        '\n' +
         '             ng-style="::{\'height\': row.model.height}">\n' +
         '            <div class="gantt-row-background"\n' +
         '                 ng-style="::{\'background-color\': row.model.color}">\n' +
