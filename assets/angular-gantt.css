@@ -225,6 +225,21 @@
 .gantt-row-even > .gantt-row-background {
     background-color: #EFEFEF;
 }
+/*removed ng-class-even ng-class-odd in favour of these rules*/
+.gantt-table-content > div > div:nth-child(even),
+.gantt-side-content-tree .gantt-row-label:nth-child(even) {
+    background-color: #EFEFEF;
+}
+
+.gantt-side-content > div,
+.gantt-side-content-tree  {
+    width: 100%;
+}
+
+.gantt-table-content > div > div:nth-child(even) {
+    background-color: #EFEFEF;
+}
+/**/
 
 .gantt-row {
     position: relative;

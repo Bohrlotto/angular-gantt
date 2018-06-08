@@ -5763,8 +5763,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    <script type="text/ng-template" id="template/ganttRowBackground.tmpl.html">\n' +
         '        <div class="gantt-row gantt-row-height"\n' +
         '             ng-class="row.model.classes"\n' +
-        '             ng-class-odd="\'gantt-row-odd\'"\n' +
-        '             ng-class-even="\'gantt-row-even\'"\n' +
+        '\n' +
         '             ng-style="::{\'height\': row.model.height}">\n' +
         '            <div class="gantt-row-background"\n' +
         '                 ng-style="::{\'background-color\': row.model.color}">\n' +
