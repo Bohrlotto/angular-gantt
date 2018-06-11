@@ -5628,7 +5628,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    <gantt-scrollable>\n' +
         '        <gantt-body>\n' +
         '            <gantt-body-background>\n' +
-        '                <gantt-row-background ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="{{::ganttContainerId}}"></gantt-row-background>\n' +
+        '                <gantt-row-background ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="gantt-container"></gantt-row-background>\n' +
         '            </gantt-body-background>\n' +
         '            <gantt-body-foreground>\n' +
         '                <div class="gantt-current-date-line" ng-show="currentDate === \'line\' && gantt.currentDateManager.position >= 0 && gantt.currentDateManager.position <= gantt.width" ng-style="{\'left\': gantt.currentDateManager.position + \'px\' }"></div>\n' +
@@ -5641,7 +5641,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '            <div ng-if="gantt.columnsManager.visibleColumns == 0" style="background-color: #808080"></div>\n' +
         '            <gantt-body-rows>\n' +
         '                <!-- <gantt-timespan ng-repeat="timespan in gantt.timespansManager.timespans track by timespan.model.id"></gantt-timespan>-->\n' +
-        '                <gantt-row ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="{{::ganttContainerId}}">\n' +
+        '                <gantt-row ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="gantt-container">\n' +
         '                    <gantt-task ng-repeat="task in row.visibleTasks track by task.model.id">\n' +
         '                    </gantt-task>\n' +
         '                </gantt-row>\n' +

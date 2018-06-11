@@ -186,6 +186,7 @@ angular.module('angularGanttDemoApp')
                     color: '#AA8833' // Color of the task in HEX format (Optional).
                 };
             },
+            ganttContainer: 'gantt-container',
             api: function(api) {
                 // API Object is used to control methods and events from angular-gantt.
                 $scope.api = api;
