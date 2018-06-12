@@ -337,3 +337,18 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+.gantt-header-columns > div:last-child > div {
+    border-bottom: 1px solid #dddddd;
+}
+
+.gantt-header-columns > div:first-child > div {
+    border-top: 1px solid #dddddd;
+}
+
+.gantt-table-content > div > div:nth-child(even) {
+	background-color: #EFEFEF;
+}
+.gantt-body-background > :nth-child(even) {
+	background-color: #efefef;
+}

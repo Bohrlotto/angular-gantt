@@ -152,6 +152,8 @@
                 this.columnsManager = new ColumnsManager(this);
                 this.timespansManager = new TimespansManager(this);
                 this.currentDateManager = new CurrentDateManager(this);
+                
+                this.ganttContainerId = this.$scope.ganttContainerId;
 
                 this.originalWidth = 0;
                 this.width = 0;

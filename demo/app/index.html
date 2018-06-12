@@ -244,7 +244,7 @@
                                 </h4>
                             </div>
                             <div class="panel-collapse" bs-collapse-target>
-                                <div class="panel-body" id="gantt-container">
+                                <div class="panel-body" id="gantt-container" style="height: 600px; padding-bottom: 30px">
                                     <div gantt
                                          data="data"
                                          
@@ -296,7 +296,7 @@
                                             task-factory="options.drawTaskFactory">
                                         </gantt-draw-task>
                                         <gantt-overlap></gantt-overlap>
-                                        <gantt-resize-sensor></gantt-resize-sensor>
+                                        
                                         <gantt-dependencies
                                             enabled="options.dependencies.enabled"
                                             conflict-checker="options.dependencies.conflictChecker"
@@ -369,6 +369,8 @@
 <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
 <script src="bower_components/moment/moment.js"></script>
 <script src="bower_components/angular-moment/angular-moment.js"></script>
+<script src="bower_components/scrollMonitor/scrollMonitor.js"></script>
+<script src="bower_components/angular-viewport-watch/angular-viewport-watch.js"></script>
 <script src="bower_components/angular-gantt/assets/angular-gantt.js"></script>
 <script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js"></script>
 <script src="bower_components/moment-range/dist/moment-range.js"></script>

@@ -60,7 +60,8 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 timeFramesMagnet: '=?',
                 data: '=?',
                 api: '=?',
-                options: '=?'
+                options: '=?',
+                ganttContainerId: '@?'
             },
             controller: ['$scope', '$element', function($scope, $element) {
                 for (var option in $scope.options) {
@@ -1600,6 +1601,20 @@ Github: https://github.com/angular-gantt/angular-gantt.git
             this.scrollToScrollAnchor();
 
             this.gantt.api.columns.raise.generate(this.columns, this.headers);
+            
+
+            /*fix first and last class to column-headers element via vanilla javascript*/
+            var list = document.getElementsByClassName('gantt-header-row');
+            for (var i = 0, l = list.length; i < l; i++) {
+            	if (list[i].firstElementChild){
+            		list[i].firstElementChild.classList.add('gantt-column-header-first');   
+            	}
+            	if (list[i].lastElementChild){
+            		list[i].firstChild.classList.add('gantt-column-header-last');
+            	}
+            }  
+            /**/
+            
         };
 
         ColumnsManager.prototype.updateColumnsMeta = function() {
@@ -2030,8 +2045,8 @@ Github: https://github.com/angular-gantt/angular-gantt.git
 (function() {
     'use strict';
     angular.module('gantt').factory('Gantt', [
-        'GanttApi', 'GanttOptions', 'GanttCalendar', 'GanttScroll', 'GanttBody', 'GanttRowHeader', 'GanttHeader', 'GanttSide', 'GanttObjectModel', 'GanttRowsManager', 'GanttColumnsManager', 'GanttTimespansManager', 'GanttCurrentDateManager', 'ganttArrays', 'moment', '$document', '$timeout',
-        function(GanttApi, Options, Calendar, Scroll, Body, RowHeader, Header, Side, ObjectModel, RowsManager, ColumnsManager, TimespansManager, CurrentDateManager, arrays, moment, $document, $timeout) {
+        'GanttApi', 'GanttOptions', 'GanttCalendar', 'GanttScroll', 'GanttBody', 'GanttRowHeader', 'GanttHeader', 'GanttSide', 'GanttObjectModel', 'GanttRowsManager', 'GanttTasksManager', 'GanttColumnsManager', 'GanttTimespansManager', 'GanttCurrentDateManager', 'ganttArrays', 'moment', '$document', '$timeout',
+        function(GanttApi, Options, Calendar, Scroll, Body, RowHeader, Header, Side, ObjectModel, RowsManager, TasksManager, ColumnsManager, TimespansManager, CurrentDateManager, arrays, moment, $document, $timeout) {
             // Gantt logic. Manages the columns, rows and sorting functionality.
             var Gantt = function($scope, $element) {
                 var self = this;
@@ -2097,6 +2112,8 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 this.api.registerMethod('timeframes', 'clearDateFrames', this.calendar.clearDateFrames, this.calendar);
                 this.api.registerMethod('timeframes', 'registerTimeFrameMappings', this.calendar.registerTimeFrameMappings, this.calendar);
                 this.api.registerMethod('timeframes', 'clearTimeFrameMappings', this.calendar.clearTimeFrameMappings, this.calendar);
+                
+                this.api.registerMethod('tasks', 'updateStyle', Gantt.prototype.updateTaskStyle, this);
 
                 $scope.$watchGroup(['timeFrames', 'dateFrames'], function(newValues, oldValues) {
                     if (newValues !== oldValues) {
@@ -2175,9 +2192,12 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 this.objectModel = new ObjectModel(this.api);
 
                 this.rowsManager = new RowsManager(this);
+                this.tasksManager = new TasksManager(this);
                 this.columnsManager = new ColumnsManager(this);
                 this.timespansManager = new TimespansManager(this);
                 this.currentDateManager = new CurrentDateManager(this);
+                
+                this.ganttContainerId = this.$scope.ganttContainerId;
 
                 this.originalWidth = 0;
                 this.width = 0;
@@ -2443,6 +2463,15 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 $timeout(renderedFunction);
             };
 
+            Gantt.prototype.updateTaskStyle = function (id, color) {
+            	if (color[0] !== '#'){
+            		color = '#' + color;
+            	}
+            	var task = arrays.findTaskById(this.$scope.data, id);
+            	task.color = color;
+                document.getElementById(task.id).childNodes[1].style.backgroundColor = task.color; 
+            };
+            
             return Gantt;
         }]);
 }());
@@ -3231,7 +3260,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
             this.row = row;
             this.model = model;
             this.truncatedLeft = false;
-            this.truncatedRight = false;
+            this.truncatedRight = false;    
         };
 
         Task.prototype.isMilestone = function() {
@@ -3411,10 +3440,31 @@ Github: https://github.com/angular-gantt/angular-gantt.git
             return new Task(this.row, angular.copy(this.model));
         };
 
+        
         return Task;
     }]);
 }());
 
+
+(function() {
+    'use strict';
+    angular.module('gantt').factory('GanttTasksManager', ['GanttRow', 'ganttArrays', '$filter', '$timeout', 'moment', function() {
+        var TasksManager = function(gantt) {
+            //var self = this;
+
+            this.gantt = gantt;
+
+            //this.gantt.api.registerMethod('tasks', 'updateStyle2', TasksManager.prototype.updateTaskStyle, self);
+            
+            //this.gantt.api.registerEvent('tasks', 'add');
+            
+
+            //this.updateVisibleObjects();
+        };
+
+        return TasksManager;
+    }]);
+}());
 
 (function(){
     'use strict';
@@ -3955,6 +4005,21 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                     return true;
                 }
                 return false;
+            },
+            findTaskById: function(array, id, idProperty) {
+            	var i, j;
+            	if (idProperty === undefined) {
+            		idProperty = 'taskId';
+                }
+            	for (i = array.length - 1; i >= 0; i--) {
+            		if (array[i].tasks){
+            			for (j = array[i].tasks.length - 1; j >= 0; j--){
+            				if (array[i].tasks[j][idProperty] === id) {
+            					return array[i].tasks[j];
+                     		}
+            			}
+            		}
+                }
             }
         };
     }]);
@@ -5481,7 +5546,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
 angular.module('gantt.templates', []).run(['$templateCache', function ($templateCache) {
     $templateCache.put('template/gantt.tmpl.html',
         '<div class="gantt unselectable" ng-cloak gantt-scroll-manager\n' +
-        '     gantt-container-height-listener="ganttContainerHeight"\n' +
+        '     \n' +
         '     gantt-container-width-listener="ganttContainerWidth"\n' +
         '     gantt-element-height-listener="ganttElementHeight"\n' +
         '     gantt-element-width-listener="ganttElementWidth">\n' +
@@ -5498,8 +5563,8 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '        <gantt-header gantt-element-height-listener="$parent.ganttHeaderHeight">\n' +
         '            <gantt-header-columns>\n' +
         '                <div ng-repeat="header in gantt.columnsManager.visibleHeaders track by $index">\n' +
-        '                    <div class="gantt-header-row" ng-class="{\'gantt-header-row-last\': $last, \'gantt-header-row-first\': $first}">\n' +
-        '                        <gantt-column-header ng-repeat="column in header"></gantt-column-header>\n' +
+        '                    <div class="gantt-header-row">\n' +
+        '                        <gantt-column-header ng-repeat="column in ::header"></gantt-column-header>\n' +
         '                    </div>\n' +
         '                </div>\n' +
         '            </gantt-header-columns>\n' +
@@ -5508,20 +5573,20 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    <gantt-scrollable>\n' +
         '        <gantt-body>\n' +
         '            <gantt-body-background>\n' +
-        '                <gantt-row-background ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="{{::ganttContainerId}}"></gantt-row-background>\n' +
+        '                <gantt-row-background ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="{{::gantt.ganttContainerId}}"></gantt-row-background>\n' +
         '            </gantt-body-background>\n' +
         '            <gantt-body-foreground>\n' +
         '                <div class="gantt-current-date-line" ng-show="currentDate === \'line\' && gantt.currentDateManager.position >= 0 && gantt.currentDateManager.position <= gantt.width" ng-style="{\'left\': gantt.currentDateManager.position + \'px\' }"></div>\n' +
         '            </gantt-body-foreground>\n' +
         '            <gantt-body-columns>\n' +
         '                <gantt-column ng-repeat="column in gantt.columnsManager.visibleColumns">\n' +
-        '                    <gantt-time-frame ng-repeat="timeFrame in column.visibleTimeFrames"></gantt-time-frame>\n' +
+        '                    <!-- <gantt-time-frame ng-repeat="timeFrame in column.visibleTimeFrames"></gantt-time-frame>-->\n' +
         '                </gantt-column>\n' +
         '            </gantt-body-columns>\n' +
         '            <div ng-if="gantt.columnsManager.visibleColumns == 0" style="background-color: #808080"></div>\n' +
         '            <gantt-body-rows>\n' +
-        '                <gantt-timespan ng-repeat="timespan in gantt.timespansManager.timespans track by timespan.model.id"></gantt-timespan>\n' +
-        '                <gantt-row ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="{{::ganttContainerId}}">\n' +
+        '                <!-- <gantt-timespan ng-repeat="timespan in gantt.timespansManager.timespans track by timespan.model.id"></gantt-timespan>-->\n' +
+        '                <gantt-row ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id" viewport-watch container-id="{{::gantt.ganttContainerId}}">\n' +
         '                    <gantt-task ng-repeat="task in row.visibleTasks track by task.model.id">\n' +
         '                    </gantt-task>\n' +
         '                </gantt-row>\n' +
@@ -5567,7 +5632,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttColumnHeader.tmpl.html">\n' +
-        '        <div class="gantt-column-header" ng-class="{\'gantt-column-header-last\': $last, \'gantt-column-header-first\': $first}">{{::column.label}}</div>\n' +
+        '        <div class="gantt-column-header">{{::column.label}}</div>\n' +
         '    </script>\n' +
         '\n' +
         '    <!-- Body background template -->\n' +
@@ -5586,7 +5651,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttColumn.tmpl.html">\n' +
-        '        <div ng-transclude class="gantt-column gantt-foreground-col" ng-class="{\'gantt-column-last\': $last, \'gantt-column-first\': $first}"></div>\n' +
+        '        <div ng-transclude class="gantt-column gantt-foreground-col" ng-class="::{\'gantt-column-last\': $last, \'gantt-column-first\': $first}"></div>\n' +
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttTimeFrame.tmpl.html">\n' +
@@ -5615,7 +5680,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '\n' +
         '    <!-- Task template -->\n' +
         '    <script type="text/ng-template" id="template/ganttTask.tmpl.html">\n' +
-        '        <div class="gantt-task" ng-class="task.model.classes">\n' +
+        '        <div class="gantt-task" ng-class="task.model.classes" id="{{::task.model.id}}">\n' +
         '            <gantt-task-background></gantt-task-background>\n' +
         '            <gantt-task-foreground></gantt-task-foreground>\n' +
         '            <gantt-task-content></gantt-task-content>\n' +
@@ -5623,13 +5688,13 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttTaskBackground.tmpl.html">\n' +
-        '        <div class="gantt-task-background" ng-style="{\'background-color\': task.model.color}"></div>\n' +
+        '        <div class="gantt-task-background" ng-style="::{\'background-color\': task.model.color}"></div>\n' +
         '    </script>\n' +
         '\n' +
         '    <script type="text/ng-template" id="template/ganttTaskForeground.tmpl.html">\n' +
         '        <div class="gantt-task-foreground">\n' +
-        '            <div ng-if="task.truncatedRight" class="gantt-task-truncated-right" ng-style="{\'padding-right\': task.truncatedRightOffset + \'px\'}">&gt;</div>\n' +
-        '            <div ng-if="task.truncatedLeft" class="gantt-task-truncated-left" ng-style="{\'padding-left\': task.truncatedLeftOffset + \'px\'}">&lt;</div>\n' +
+        '            <!--<div ng-if="task.truncatedRight" class="gantt-task-truncated-right" ng-style="{\'padding-right\': task.truncatedRightOffset + \'px\'}">&gt;</div>\n' +
+        '            <div ng-if="task.truncatedLeft" class="gantt-task-truncated-left" ng-style="{\'padding-left\': task.truncatedLeftOffset + \'px\'}">&lt;</div>-->\n' +
         '        </div>\n' +
         '    </script>\n' +
         '\n' +
@@ -5643,9 +5708,8 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '    <script type="text/ng-template" id="template/ganttRowBackground.tmpl.html">\n' +
         '        <div class="gantt-row gantt-row-height"\n' +
         '             ng-class="row.model.classes"\n' +
-        '             ng-class-odd="\'gantt-row-odd\'"\n' +
-        '             ng-class-even="\'gantt-row-even\'"\n' +
-        '             ng-style="{\'height\': row.model.height}">\n' +
+        '             \n' +
+        '             ng-style="::{\'height\': row.model.height}">\n' +
         '            <div class="gantt-row-background"\n' +
         '                 ng-style="{\'background-color\': row.model.color}">\n' +
         '            </div>\n' +
@@ -5654,11 +5718,10 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '\n' +
         '    <!-- Row template -->\n' +
         '    <script type="text/ng-template" id="template/ganttRow.tmpl.html">\n' +
-        '        <div class="gantt-row gantt-row-height"\n' +
-        '             ng-class="row.model.classes"\n' +
-        '             ng-class-odd="\'gantt-row-odd\'"\n' +
-        '             ng-class-even="\'gantt-row-even\'"\n' +
-        '             ng-style="{\'height\': row.model.height}">\n' +
+        '        <div class="gantt-row gantt-row-height""\n' +
+        '             ng-class="::row.model.classes"\n' +
+        '             \n' +
+        '             ng-style="::{\'height\': row.model.height}">\n' +
         '            <div ng-transclude class="gantt-row-content"></div>\n' +
         '        </div>\n' +
         '    </script>\n' +
@@ -5672,8 +5735,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '            <div class="gantt-side-background-body" ng-style="getMaxHeightCss()">\n' +
         '                <div gantt-vertical-scroll-receiver>\n' +
         '                    <div class="gantt-row gantt-row-height "\n' +
-        '                         ng-class-odd="\'gantt-row-odd\'"\n' +
-        '                         ng-class-even="\'gantt-row-even\'"\n' +
+        '                         \n' +
         '                         ng-class="row.model.classes"\n' +
         '                         ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id"\n' +
         '                         ng-style="{\'height\': row.model.height}">\n' +
