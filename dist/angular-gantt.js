@@ -5718,7 +5718,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '\n' +
         '    <!-- Row template -->\n' +
         '    <script type="text/ng-template" id="template/ganttRow.tmpl.html">\n' +
-        '        <div class="gantt-row gantt-row-height""\n' +
+        '        <div class="gantt-row gantt-row-height"\n' +
         '             ng-class="::row.model.classes"\n' +
         '             \n' +
         '             ng-style="::{\'height\': row.model.height}">\n' +
