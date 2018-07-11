@@ -170,7 +170,7 @@
             		list[i].firstElementChild.classList.add('gantt-column-header-first');   
             	}
             	if (list[i].lastElementChild){
-            		list[i].firstChild.classList.add('gantt-column-header-last');
+            		list[i].lastElementChild.classList.add('gantt-column-header-last');
             	}
             }  
             /**/
