@@ -1373,17 +1373,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 var startDate = moment(date);
                 var endDate = moment(startDate).add(viewScaleValue, viewScaleUnit);
                 ensureNoUnitOverflow(viewScaleUnit, startDate, endDate);
-
-                var column = builder.newColumn(startDate, endDate, leftOffset ? left + leftOffset : left, columnWidth);
-
-                if (!column.cropped) {
-                    generatedCols.push(column);
-                    if (reverse) {
-                        left -= columnWidth;
-                    } else {
-                        left += columnWidth;
-                    }
-                }
+                /*Bohr*/
                 if (to) {
                     if (reverse) {
                         if (excludeTo && date < to || !excludeTo && date <= to) {
@@ -1395,6 +1385,18 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                         }
                     }
                 }
+                /**/
+                var column = builder.newColumn(startDate, endDate, leftOffset ? left + leftOffset : left, columnWidth);
+
+                if (!column.cropped) {
+                    generatedCols.push(column);
+                    if (reverse) {
+                        left -= columnWidth;
+                    } else {
+                        left += columnWidth;
+                    }
+                }
+                
                 if (reverse) {
                     date.add(-viewScaleValue, viewScaleUnit);
                     ensureNoUnitOverflow(viewScaleUnit, date, startDate);
@@ -5564,7 +5566,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function ($template
         '            <gantt-header-columns>\n' +
         '                <div ng-repeat="header in gantt.columnsManager.visibleHeaders track by $index">\n' +
         '                    <div class="gantt-header-row">\n' +
-        '                        <gantt-column-header ng-repeat="column in ::header"></gantt-column-header>\n' +
+        '                        <gantt-column-header ng-repeat="column in header"></gantt-column-header>\n' +
         '                    </div>\n' +
         '                </div>\n' +
         '            </gantt-header-columns>\n' +
